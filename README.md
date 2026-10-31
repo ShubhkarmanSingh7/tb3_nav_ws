@@ -66,7 +66,7 @@ sudo apt install -y \
 # once per machine
 sudo rosdep init 2>/dev/null; rosdep update
 
-git clone https://github.com/ShubhkarmanSingh7/tb3_nav_ws
+git clone https://github.com/ShubhkarmanSingh7/navigation-jazzy.git ~/tb3_nav_ws
 cd ~/tb3_nav_ws
 source /opt/ros/jazzy/setup.bash
 rosdep install --from-paths src --ignore-src -y
@@ -88,7 +88,7 @@ Optional arguments:
 | Argument | Default | Use |
 |---|---|---|
 | `headless:=True` | `False` | No Gazebo window; RViz still opens. Saves GPU. |
-| `slam:=True` | `False` | slam_toolbox builds a map instead of AMCL + saved map |
+| `slam:=True` | `False` | slam_toolbox builds a map instead of AMCL + saved map (**untested**) |
 | `autostart:=false` | `true` | Sim + RViz only; Nav2 loads but stays inactive |
 | `params_file:=...` | package config | Alternate Nav2 params (tuning experiments) |
 
@@ -147,7 +147,9 @@ re-run it:
 python3 tools/generate_world_and_map.py && colcon build --symlink-install
 ```
 
-**Building it with slam_toolbox** :
+**Building it with slam_toolbox**. **Untested:** this
+workflow, including the origin-shift step below, has not been run on this project; the
+shipped map is the generated ground truth.
 
 ```bash
 # terminal 1: sim + Nav2 with slam_toolbox instead of AMCL/map_server
@@ -214,7 +216,10 @@ ros2 run tf2_ros tf2_echo map base_link
 ```bash
 diff /opt/ros/jazzy/share/nav2_bringup/params/nav2_params.yaml \
      src/tb3_nav_demo/config/nav2_params.yaml
-# expect: header comment + the AMCL initial-pose block, nothing else
+# expect exactly two hunks, nothing else:
+#   0a1,8    the 8-line header comment
+#   39a48,58 the AMCL block: NON-DEFAULT comment + set_initial_pose + initial_pose (spawn pose)
+# inflation_radius stays at the defaults (0.70 / 0.7): see NOTES.md, tuning experiment
 ```
 
 ## Troubleshooting
@@ -264,13 +269,13 @@ doesn't end in `src/...`, rebuild after every edit.
 subscriber types must match. With these versions, the bridge expects
 `geometry_msgs/msg/Twist`.
 
-**SLAM map offset from the world.** The origin shift in "Map" was skipped.
+**SLAM map offset from the world** (untested workflow). The origin shift in "Map" was skipped.
 
 ## Clean-clone checklist
 
 From a fresh clone on a machine with the Setup packages installed, inside the container:
 
-- [ ] `git clone <repo> ~/tb3_nav_ws && cd ~/tb3_nav_ws`
+- [ ] `git clone https://github.com/ShubhkarmanSingh7/navigation-jazzy.git ~/tb3_nav_ws && cd ~/tb3_nav_ws`
 - [ ] `echo $AMENT_PREFIX_PATH` shows only `/opt/ros/jazzy` (no Humble)
 - [ ] `rosdep install --from-paths src --ignore-src -y --simulate` prints nothing missing
 - [ ] `colcon build --symlink-install` finishes with 0 errors and no warnings
@@ -283,4 +288,3 @@ From a fresh clone on a machine with the Setup packages installed, inside the co
 - [ ] `ros2 run tb3_nav_demo goal_sequence` → all 4 goals `SUCCEEDED`, exit code 0
 - [ ] `colcon test --packages-select tb3_nav_demo && colcon test-result --verbose` passes
 - [ ] params `diff` shows only the commented NON-DEFAULT block
-
