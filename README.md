@@ -66,7 +66,7 @@ sudo apt install -y \
 # once per machine
 sudo rosdep init 2>/dev/null; rosdep update
 
-git clone https://github.com/ShubhkarmanSingh7/tb3_nav_demo
+git clone https://github.com/ShubhkarmanSingh7/tb3_nav_ws
 cd ~/tb3_nav_ws
 source /opt/ros/jazzy/setup.bash
 rosdep install --from-paths src --ignore-src -y
