@@ -1,0 +1,9 @@
+build/
+install/
+log/
+logs/
+logs_attempt1_box_east_gap_0.7m/
+__pycache__/
+*.pyc
+logs/
+logs_attempt1_box_east_gap_0.7m/
