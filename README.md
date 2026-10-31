@@ -66,7 +66,7 @@ sudo apt install -y \
 # once per machine
 sudo rosdep init 2>/dev/null; rosdep update
 
-git clone https://github.com/ShubhkarmanSingh7/navigation-jazzy.git ~/tb3_nav_ws
+git clone https://github.com/ShubhkarmanSingh7/tb3_nav_ws.git ~/tb3_nav_ws
 cd ~/tb3_nav_ws
 source /opt/ros/jazzy/setup.bash
 rosdep install --from-paths src --ignore-src -y
@@ -275,7 +275,7 @@ subscriber types must match. With these versions, the bridge expects
 
 From a fresh clone on a machine with the Setup packages installed, inside the container:
 
-- [ ] `git clone https://github.com/ShubhkarmanSingh7/navigation-jazzy.git ~/tb3_nav_ws && cd ~/tb3_nav_ws`
+- [ ] `git clone https://github.com/ShubhkarmanSingh7/tb3_nav_ws.git ~/tb3_nav_ws && cd ~/tb3_nav_ws`
 - [ ] `echo $AMENT_PREFIX_PATH` shows only `/opt/ros/jazzy` (no Humble)
 - [ ] `rosdep install --from-paths src --ignore-src -y --simulate` prints nothing missing
 - [ ] `colcon build --symlink-install` finishes with 0 errors and no warnings
